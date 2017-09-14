@@ -553,20 +553,28 @@
 		padding: 6em 2em ;
 		margin: 10em 2em;
 	}
+	.star-5:before {
+		content: "★★★★★";
+		padding-right: 1em;
+	}
+	.star-4:before {
+		content: "★★★★☆";
+		padding-right: 1em;
+	}
 	.star-3:before {
-		content: "★★★";
+		content: "★★★☆☆";
 		padding-right: 1em;
 	}
 	.star-2:before {
-		content: "★★☆";
+		content: "★★☆☆☆";
 		padding-right: 1em;
 	}
 	.star-1:before {
-		content: "★☆☆";
+		content: "★☆☆☆☆";
 		padding-right: 1em;
 	}
 	.star-1:before {
-		content: "★☆☆";
+		content: "★☆☆☆☆";
 		padding-right: 1em;
 	}
 
