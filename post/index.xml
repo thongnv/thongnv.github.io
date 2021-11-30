@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Thong Nguyen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Nov 2021 16:17:39 +0700</lastBuildDate><atom:link href="https://thongnv.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 30 Nov 2021 17:58:19 +0700</lastBuildDate><atom:link href="https://thongnv.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RxJS</title>
+      <link>https://thongnv.github.io/p/rxjs/</link>
+      <pubDate>Tue, 30 Nov 2021 17:58:19 +0700</pubDate>
+      
+      <guid>https://thongnv.github.io/p/rxjs/</guid>
+      <description>Tổng quan RxJS là một thư viện dùng cho việc phát triển web được dùng rất rộng rãi hiện nay. Thư viện này chuyên trị các vấn đề liên quan đến sự kiện (events), hơn nữa còn bao gồm các framework, thư viện và tiện ích phong phú nên trở nên rất hấp dẫn với cộng đồng dev. Ngoài ra dùng RxJS cũng giúp chúng ta hiểu rõ hơn về Reactive Programming, một phong cách lập trình rất khác.</description>
+    </item>
+    
     <item>
       <title>Frontend cơ bản – Một trang web được render ra làm sao?</title>
       <link>https://thongnv.github.io/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/</link>

@@ -6,7 +6,86 @@
         <description>Recent content on Thong Nguyen</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 30 Nov 2021 16:17:39 +0700</lastBuildDate><atom:link href="https://thongnv.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 30 Nov 2021 17:58:19 +0700</lastBuildDate><atom:link href="https://thongnv.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>RxJS</title>
+        <link>https://thongnv.github.io/p/rxjs/</link>
+        <pubDate>Tue, 30 Nov 2021 17:58:19 +0700</pubDate>
+        
+        <guid>https://thongnv.github.io/p/rxjs/</guid>
+        <description>&lt;img src="https://thongnv.github.io/p/rxjs/rxjs.png" alt="Featured image of post RxJS" /&gt;&lt;h2 id=&#34;tổng-quan&#34;&gt;Tổng quan&lt;/h2&gt;
+&lt;p&gt;RxJS là một thư viện dùng cho việc phát triển web được dùng rất rộng rãi hiện nay. Thư viện này chuyên trị các vấn đề liên quan đến sự kiện (events), hơn nữa còn bao gồm các framework, thư viện và tiện ích phong phú nên trở nên rất hấp dẫn với cộng đồng dev. Ngoài ra dùng RxJS cũng giúp chúng ta hiểu rõ hơn về Reactive Programming, một phong cách lập trình rất khác.&lt;/p&gt;
+&lt;p&gt;Tuy vậy, học RxJS không hề dễ vì có rất nhiều khái niệm, các tầng API và đặc biệt là khác biệt về tư duy lập trình. Bài viết này sẽ giới thiệu qua về RxJS để các bạn dễ dàng tiếp cận và sau đó đào sâu hơn nữa vào thư viện rất tuyệt vời này.&lt;/p&gt;
+&lt;h2 id=&#34;observable-type&#34;&gt;Observable type&lt;/h2&gt;
+&lt;p&gt;Đặc điểm cốt yếu của RxJS đó là nó xử lý các sự kiện và luồng dữ liệu bất đồng bộ nhờ vào observable sequence – các chuỗi sự kiện quan sát được. Cốt lõi của nó là Observable type, và nó có các type liên quan (Observer, Schedulers, Subjects). Các toán tử mà thư viện này dùng lấy cảm hứng từ các toán tử của Array như map, filter, reduce, every… chỉ khác là thay vì xử lý các dữ liệu tĩnh của Array, RxJS dùng các toán tử này cho các luồng dữ liệu.&lt;/p&gt;
+&lt;p&gt;Để dễ hình dung, hãy cùng xem 1 ví dụ đơn giản sau&lt;/p&gt;
+&lt;p&gt;Thông thường bạn sẽ gán một sự kiện vào html như thế nào? Đúng rồi, bạn cần dùng hàm addEventListener()&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;document.addEventListener(&#39;click&#39;, () =&amp;gt; console.log(&#39;Clicked!&#39;));
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Nếu dùng RxJS&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import { fromEvent } from &#39;rxjs&#39;;
+ 
+fromEvent(document, &#39;click&#39;).subscribe(() =&amp;gt; console.log(&#39;Clicked!&#39;));
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ở đây hàm fromEvent() có vai trò như hàm addEventListener ở trên, nhưng thay vì tạo ra một Event thì nó tạo ra một observable, và bạn có thể subscribe nó giống như các data stream thông thường.
+Nếu bạn đã biết tới khái niệm pure function (hàm thuần khiết), tức là các hàm chỉ thay đổi các giá trị từ input để return giá trị mới mà không gây ra các side effects (ảnh hưởng tới các biến bên ngoài hàm) thì bạn sẽ thấy được ưu điểm của việc sử dụng pure function. RxJS tận dụng mạnh mẽ các pure function này, chẳng hạn qua ví dụ sau&lt;/p&gt;
+&lt;p&gt;Với lập trình JS thông thường, khi muốn đếm số click chuột thì ta làm thế này&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;let count = 0;
+document.addEventListener(&#39;click&#39;, () =&amp;gt; console.log(`Clicked ${++count} times`));
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Còn với RxJS&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import { fromEvent } from &#39;rxjs&#39;;
+import { scan } from &#39;rxjs/operators&#39;;
+ 
+fromEvent(document, &#39;click&#39;)
+  .pipe(scan(count =&amp;gt; count + 1, 0))
+  .subscribe(count =&amp;gt; console.log(`Clicked ${count} times`));
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Có thể bạn hơi bối rối khi chưa làm quen với các toán tử của RxJS. Ở ví dụ trên pipe() là hàm dùng để tương tác với giá trị trả về từ observable, trong pipe bạn có thể dùng các hàm toán tử khác nhau để thao tác với giá trị đó. Ở đây scan() hoạt động tương tự với hàm reduce() của Array, nó giúp thực hiện phép toán cộng dồn giá trị count ở mỗi lần có giá trị trả về. Như vậy khi dùng RxJS thì bạn không cần khai báo 1 biến count và tương tác trực tiếp với nó mà vẫn có thể đếm được click thông qua giá trị count trả về từ observable.&lt;/p&gt;
+&lt;p&gt;RxJS có rất nhiều toán tử dùng để tương tác với các event qua các observable. Dưới đây là một ví dụ về cách để hạn chế số click trong một giây&lt;/p&gt;
+&lt;p&gt;JavaScipt thuần&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;let count = 0;
+let rate = 1000;
+let lastClick = Date.now() - rate;
+document.addEventListener(&#39;click&#39;, () =&amp;gt; {
+  if (Date.now() - lastClick &amp;gt;= rate) {
+    console.log(`Clicked ${++count} times`);
+    lastClick = Date.now();
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Với RxJS&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import { fromEvent } from &#39;rxjs&#39;;
+import { throttleTime, scan } from &#39;rxjs/operators&#39;;
+ 
+fromEvent(document, &#39;click&#39;)
+  .pipe(
+    throttleTime(1000),
+    scan(count =&amp;gt; count + 1, 0)
+  )
+  .subscribe(count =&amp;gt; console.log(`Clicked ${count} times`));
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Có thể thấy rõ ràng rằng RxJS giải quyết vấn đề quản lý flow rất gọn gàng so với JS thuần. Ngoài hàm throttleTime() ở trên còn có nhiều hàm khác như filter,  delay,  debounceTime,  take,  takeUntil,  distinct,  distinctUntilChanged&lt;/p&gt;
+&lt;p&gt;Hãy cùng xem một ví dụ cuối cùng về xử lý giá trị của RxJS.&lt;/p&gt;
+&lt;p&gt;Ví dụ dưới đây là về bài toán cộng giá trị tọa độ x với mỗi click. với JavaScipt thuần thì sẽ như sau&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;let count = 0;
+const rate = 1000;
+let lastClick = Date.now() - rate;
+document.addEventListener(&#39;click&#39;, event =&amp;gt; {
+  if (Date.now() - lastClick &amp;gt;= rate) {
+    count += event.clientX;
+    console.log(count);
+    lastClick = Date.now();
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Xử lý với RxJS&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import { fromEvent } from &#39;rxjs&#39;;
+import { throttleTime, map, scan } from &#39;rxjs/operators&#39;;
+ 
+fromEvent(document, &#39;click&#39;)
+  .pipe(
+    throttleTime(1000),
+    map(event =&amp;gt; event.clientX),
+    scan((count, clientX) =&amp;gt; count + clientX, 0)
+  )
+  .subscribe(count =&amp;gt; console.log(count));
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Trong ví dụ này thao tác click sẽ được chuyển thành một observable, set thời gian chờ là 1 giây, sau đó mỗi event click chuột được map sang giá trị clientX của nó, cuối cùng dùng hàm scan để cộng dồn giá trị clientX.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Frontend cơ bản – Một trang web được render ra làm sao?</title>
         <link>https://thongnv.github.io/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/</link>
         <pubDate>Tue, 30 Nov 2021 16:17:39 +0700</pubDate>
