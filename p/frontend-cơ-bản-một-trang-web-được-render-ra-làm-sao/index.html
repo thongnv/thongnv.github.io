@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Tổng quan Render một trang web là quá trình hiển thị trang web bắt đầu từ lúc bạn nhận được dữ liệu từ server (sau khi bạn gõ một tên miền – chẳng hạn như lienxo.us – vào thanh trình duyệt), đến khi trang web (bao gồm hình ảnh, âm thanh, chữ viết) được hiển thị đầy đủ trên màn hình. Quá trình này thực tế khá phức tạp và trải qua nhiều xử lý khác nhau, việc nắm được cách thức render giúp ích rất nhiều cho việc optimize tốc độ load trang.'><title>Frontend cơ bản – Một trang web được render ra làm sao?</title>
+
+<link rel='canonical' href='https://thongnv.github.io/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Frontend cơ bản – Một trang web được render ra làm sao?'>
+<meta property='og:description' content='Tổng quan Render một trang web là quá trình hiển thị trang web bắt đầu từ lúc bạn nhận được dữ liệu từ server (sau khi bạn gõ một tên miền – chẳng hạn như lienxo.us – vào thanh trình duyệt), đến khi trang web (bao gồm hình ảnh, âm thanh, chữ viết) được hiển thị đầy đủ trên màn hình. Quá trình này thực tế khá phức tạp và trải qua nhiều xử lý khác nhau, việc nắm được cách thức render giúp ích rất nhiều cho việc optimize tốc độ load trang.'>
+<meta property='og:url' content='https://thongnv.github.io/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/'>
+<meta property='og:site_name' content='Thong Nguyen'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-11-30T16:17:39&#43;07:00'/><meta property='article:modified_time' content='2021-11-30T16:17:39&#43;07:00'/><meta property='og:image' content='https://thongnv.github.io/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/frontend-web-render.jpg' />
+<meta name="twitter:title" content="Frontend cơ bản – Một trang web được render ra làm sao?">
+<meta name="twitter:description" content="Tổng quan Render một trang web là quá trình hiển thị trang web bắt đầu từ lúc bạn nhận được dữ liệu từ server (sau khi bạn gõ một tên miền – chẳng hạn như lienxo.us – vào thanh trình duyệt), đến khi trang web (bao gồm hình ảnh, âm thanh, chữ viết) được hiển thị đầy đủ trên màn hình. Quá trình này thực tế khá phức tạp và trải qua nhiều xử lý khác nhau, việc nắm được cách thức render giúp ích rất nhiều cho việc optimize tốc độ load trang."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://thongnv.github.io/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/frontend-web-render.jpg' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/">
+                <img src="/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/frontend-web-render_hu4f7de4b6777e327d076bd3c77d9c2c01_71046_800x0_resize_q75_box.jpg"
+                        srcset="/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/frontend-web-render_hu4f7de4b6777e327d076bd3c77d9c2c01_71046_800x0_resize_q75_box.jpg 800w, /p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/frontend-web-render_hu4f7de4b6777e327d076bd3c77d9c2c01_71046_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="300" 
+                        loading="lazy"
+                        alt="Featured image of post Frontend cơ bản – Một trang web được render ra làm sao?" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+
+    <h2 class="article-title">
+        <a href="/p/frontend-c%C6%A1-b%E1%BA%A3n-m%E1%BB%99t-trang-web-%C4%91%C6%B0%E1%BB%A3c-render-ra-l%C3%A0m-sao/">Frontend cơ bản – Một trang web được render ra làm sao?</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 30, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    4 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="tổng-quan">Tổng quan</h2>
+<p>Render một trang web là quá trình hiển thị trang web bắt đầu từ lúc bạn nhận được dữ liệu từ server (sau khi bạn gõ một tên miền – chẳng hạn như lienxo.us – vào thanh trình duyệt), đến khi trang web (bao gồm hình ảnh, âm thanh, chữ viết) được hiển thị đầy đủ trên màn hình. Quá trình này thực tế khá phức tạp và trải qua nhiều xử lý khác nhau, việc nắm được cách thức render giúp ích rất nhiều cho việc optimize tốc độ load trang.</p>
+<h2 id="qúa-trình-render">Qúa trình render</h2>
+<p>Chúng ta hãy bắt đầu với một cái nhìn tổng quan về các hoạt động xảy ra ở trình duyệt trong quá trình render:</p>
+<ol>
+<li>Từ dữ liệu HTML đã nhận từ server Browser tạo ra DOM (Document Object Model) .</li>
+<li>Styles được load và parsed (phân tích) để tạo ra CSSOM (CSS Object Model).</li>
+<li>Dựa trên DOM và CSSOM ở trên, browser dựng lên một rendering tree – là một tập các object sẽ được render (Webkit gọi nó là render object hay renderer, trong khi đó Gecko gọi nó là một frame). Render tree có cấu trúc mô phỏng theo DOM và loại trừ các thành phần không được hiển thị (chẳng hạn thẻ hay các thành phần có style display:none). Mỗi đoạn text được biểu diễn như là một renderer tách biệt trong rendering tree. Mỗi đối tượng render chứa một đối tượng DOM tương ứng (hoặc một đoạn text) cộng với styles đã tính toán. Nói cách khác, render tree mô tả một biểu diễn hình ảnh của một DOM.</li>
+<li>Với mỗi thành phần render tree, các toạ độ tương ứng cũng được tính toán và được gọi là “layout”.</li>
+<li>Cuối cùng, nội dung trang web được hiển thị lên màn hình, quá trình này gọi là “painting”.</li>
+</ol>
+<p>Khi user thao tác với trang web, hoặc là có đoạn script nào đó thay đổi trang web thì các bước kể trên được lặp lại vì cấu trúc trang web đã bị thay đổi.</p>
+<h2 id="repaint">Repaint</h2>
+<p>Nếu như chỉ thay đổi style của các element mà không làm thay đổi đến vị trí các element trên trang web (chẳng hạn background-color, border-color, visibility), thì trình duyệt chỉ cần repaint các element đó với style mới (có thể gọi là restyle).</p>
+<h2 id="reflow">Reflow</h2>
+<p>Khi thay đổi nội dung hay cấu trúc của trang web thì sẽ xảy ra quá trình gọi là reflow (còn gọi là relayout). Những thay đổi trên có thể kể đến như:</p>
+<ul>
+<li>Thao tác tới DOM (thêm, sửa, xoá element)</li>
+<li>Thay đổi nội dung, bao gồm text trong form</li>
+<li>Tính toán hoặc thay đổi các CSS property</li>
+<li>Thêm hay xoá style sheet</li>
+<li>Thay đổi thuộc tính class</li>
+<li>Thay đổi cửa sổ trình duyệt (thay đổi kích thước cửa sổ, cuộn trang)</li>
+<li>Kích hoạt đến pseduo-class (chẳng hạn class :hover)</li>
+<li>Browser optimize quá trình render trang như thế nào</li>
+</ul>
+<p>Browser sẽ cố gắng giới hạn việc repaint/reflow chỉ trong phạm vi chứa các element bị thay đổi. Ví dụ, thay đổi kích thước của 1 element với style absolute/fixed chỉ ảnh hưởng đến bản thân element đấy và các element con của nó, trong khi nếu element đó có style là static position thì thay đổi sẽ ảnh hưởng tất cả các element khác.</p>
+<p>Một cách khác để optimize là khi chạy code JavaScript, browser sẽ cache lại những thay đổi và áp dụng chúng vào một node liên quan sau khi code chạy xong. Chẳng hạn đoạn code sau chỉ kích hoạt một reflow và repaint:</p>
+<pre tabindex="0"><code>var $body = $('body');
+$body.css('padding', '1px'); // reflow, repaint 
+$body.css('color', 'red'); // repaint 
+$body.css('margin', '2px'); // reflow, repaint 
+// only 1 reflow and repaint will actually happen
+</code></pre><h2 id="lời-khuyên-hữu-ích-cho-việc-optimize">Lời khuyên hữu ích cho việc optimize</h2>
+<ul>
+<li>Code HTML và CSS phải đúng chuẩn, mặc dù nếu có gặp 1 lỗi cú pháp thì trang web vẫn chạy như thường. Styles cần cho vào trong phần <code>&lt;head&gt;</code> còn các mã JavaScript cần cho vào trong thẻ <code>&lt;body&gt;</code></li>
+<li>Cố gắng đơn giản hoá các CSS selector, tối thiểu hoá số lượng nesting (các CSS selector lồng vào nhau). Xếp theo mức độ nhanh đến chậm thì CSS selector được liệt kê như sau:</li>
+</ul>
+<pre tabindex="0"><code>Identificator: #id
+Class: .class
+Tag: div
+Selector nối tiếp: a + i
+Selector cha: ul &gt; li
+Selector tổng: *
+Attribute selector: input[type=”text”]
+Pseudoclasse, Pseudoelement: a:hover
+div * {...} // bad 
+.list li {...} // bad 
+.list-item {...} // good 
+#list .list-item {...} // good
+</code></pre><ul>
+<li>Tối thiểu hoá thao tác tới DOM, dùng cache mọi chỗ có thể</li>
+<li>Nếu dùng jQuery, hãy tuân theo jQuery selectors best practices.</li>
+<li>Nếu cần thay đổi style của element, nên thay đổi class vì sẽ có performant tốt nhất.</li>
+<li>Chỉ animate những element có style absolute/fixed</li>
+<li>Disable :hover animation khi kéo trang (thêm “no-hover” vào <code>&lt;body&gt;</code>). <a class="link" href="http://habrahabr.ru/post/204238/"  target="_blank" rel="noopener"
+    >Xem thêm tại đây</a>.</li>
+</ul>
+<p><em>Dammecode via frontendbabel</em></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2021 Thong Nguyen
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#tổng-quan">Tổng quan</a></li>
+    <li><a href="#qúa-trình-render">Qúa trình render</a></li>
+    <li><a href="#repaint">Repaint</a></li>
+    <li><a href="#reflow">Reflow</a></li>
+    <li><a href="#lời-khuyên-hữu-ích-cho-việc-optimize">Lời khuyên hữu ích cho việc optimize</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
