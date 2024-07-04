@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MISTERY WORD</title>
+    <style>
+      body {
+        background-color: #062336;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .container {
+        margin: 69px auto 0;
+        width: 85%;
+        min-width: 969px;
+      }
+      .row {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 5px;
+      }
+      .card,
+      .row--index,
+      .card--placeholder,
+      .row--reveal {
+        width: 50px;
+        height: 50px;
+        box-sizing: border-box;
+      }
+      .row--reveal {
+        cursor: pointer;
+        text-align: center;
+        line-height: 50px;
+      }
+      .row--reveal:hover {
+        color: #bfd732;
+      }
+      .row > .card--placeholder {
+        border: transparent 1px rgb(79, 69, 54);
+      }
+      .row > .row--index {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        color: #bfd732;
+        font-weight: 600;
+        margin: 0 50px;
+        cursor: pointer;
+        box-sizing: border-box;
+      }
+
+      .row > .row--index:hover {
+        transform: scale(1.5);
+      }
+
+      .row > .card {
+        display: flex;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        box-sizing: border-box;
+        perspective: 1000;
+        border: solid 2px #3a3a3c;
+        cursor: pointer;
+      }
+      .innercard {
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: all 1s linear;
+      }
+      .innercard-flip {
+        transform: rotateY(180deg);
+      }
+      .face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        text-align: center;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .face.back {
+        background-color: white;
+        color: black;
+        transform: rotateY(180deg);
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+        font-weight: bold;
+        font-size: 2rem;
+      }
+      .face.front {
+        background-color: darkolivegreen;
+        color: #fff;
+        font-size: 1rem;
+      }
+      .highlight .front,
+      .highlight .back {
+        background-color: #bfd732;
+        color: black;
+      }
+      .btn {
+        padding: 5px 10px;
+        border: solid 1px #3a3a3c;
+        border-radius: 5px;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        cursor: pointer;
+        background-color: darkolivegreen;
+      }
+      .btn:hover {
+        color: red;
+      }
+      .row--index.disable {
+        cursor: not-allowed;
+        pointer-events: none;
+        background-color: #ababad;
+        color: #3a3a3c;
+        box-shadow: none;
+      }
+
+      /* DIALOG */
+
+      dialog,
+      dialog[open] {
+        width: 69%;
+        border: none;
+        box-sizing: border-box;
+        padding: 40px;
+        text-align: center;
+        color: blue;
+        border-radius: 10px;
+      }
+      /*   Open state of the dialog  */
+      dialog[open] {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+
+      /*   Closed state of the dialog   */
+      dialog {
+        opacity: 0;
+        transform: scaleY(0);
+        transition: opacity 0.5s ease-out, transform 0.5s ease-out,
+          overlay 0.5s ease-out allow-discrete,
+          display 0.5s ease-out allow-discrete;
+        /* Equivalent to
+        transition: all 0.5s allow-discrete; */
+      }
+
+      h1 {
+        margin-top: 20px;;
+      }
+
+      /*   Before-open state  */
+      /* Needs to be after the previous dialog[open] rule to take effect,
+          as the specificity is the same */
+      @starting-style {
+        dialog[open] {
+          opacity: 0;
+          transform: scaleY(0);
+        }
+      }
+
+      /* Transition the :backdrop when the dialog modal is promoted to the top layer */
+      dialog::backdrop {
+        background-color: rgb(0 0 0 / 0%);
+        transition: display 0.5s allow-discrete, overlay 0.5s allow-discrete,
+          background-color 0.5s;
+        /* Equivalent to
+        transition: all 0.5s allow-discrete; */
+      }
+
+      dialog[open]::backdrop {
+        background-color: rgb(0 0 0 / 25%);
+      }
+
+      /* This starting-style rule cannot be nested inside the above selector
+      because the nesting selector cannot represent pseudo-elements. */
+
+      @starting-style {
+        dialog[open]::backdrop {
+          background-color: rgb(0 0 0 / 0%);
+        }
+      }
+      button.close {
+        position: absolute;
+        top: 8px;
+        right: 9px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 100%;
+        background: transparent;
+        color: #bfd732;
+      }
+      button.close:focus-visible {
+        outline: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container"></div>
+    <div class="hidden">
+      <div class="card">
+        <div class="innercard">
+          <div class="front face"></div>
+          <div class="back face">A</div>
+        </div>
+      </div>
+      <div class="card--placeholder"></div>
+      <div class="row--index"></div>
+      <div class="row--reveal">i</div>
+    </div>
+    
+    <button class="btn" onclick="seeResult()">Reveal</button>
+
+    <dialog id="dialog-1">
+      <h1>
+        People make me, save me, change me, raise me. What am I?
+      </h1>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-2">
+      <h1>
+        Look at the picture and guess the word
+      </h1>
+      <p><img src="/images/Picture1.png" height="100%" alt=""></p>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-3">
+      <h1>
+        Which fish costs the most?
+      </h1>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-4">
+      <h1>
+        Look at the picture and guess the word (Vietnamese)
+      </h1>
+      <p><img src="/images/Picture2.png" height="100%" alt=""></p>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-5">
+      <h1>
+        Look at the picture and guess the word
+      </h1>
+      <p><img src="/images/Picture3.png" height="100%" alt=""></p>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-6">
+      <h1>
+        It has keys, but no locks. It has space, but no room. You can enter, but
+        can’t go inside. What is it?
+      </h1>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-7">
+      <h1>
+        What would you call a five that's sitting on a cloud?
+      </h1>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <dialog id="dialog-8">
+      <h1>
+        What has teeth but cannot bite?
+      </h1>
+      <button class="close">&#10006;</button>
+    </dialog>
+
+    <script type="text/javascript">
+      function createRow(rowIndex, data) {
+        let [word, offset, keywordIndex] = data;
+        word = word.toUpperCase();
+        const container = document.querySelector(".container");
+        const card = document.querySelector(".card");
+        const cardOffset = document.querySelector(".card--placeholder");
+        const rowIndexCard = document.querySelector(".row--index");
+        const rowRevealCard = document.querySelector(".row--reveal");
+        const row = document.createElement("div");
+        row.classList.add("row");
+
+        const questionNode = rowIndexCard.cloneNode(true);
+        questionNode.innerHTML = ++rowIndex;
+        row.appendChild(questionNode);
+        for (let i = 0; i < offset; i++) {
+          const c = cardOffset.cloneNode(true);
+          row.appendChild(c);
+        }
+        for (let i = 0; i < word.length; i++) {
+          const l = word[i];
+          const c = card.cloneNode(true);
+          c.querySelector(".front").innerHTML = i + 1;
+          c.querySelector(".back").innerHTML = l;
+          if (offset + i === keywordIndex) {
+            c.classList.add("highlight");
+          }
+          row.appendChild(c);
+        }
+        const answerNode = rowRevealCard.cloneNode(true);
+        answerNode.addEventListener("click", () =>
+          revealRow(questionNode.innerHTML)
+        );
+        row.appendChild(answerNode);
+        container.appendChild(row);
+      }
+
+      function revealRow(i) {
+        const container = document.querySelector(".container");
+        const row = container.querySelector(".row:nth-child(" + i + ")");
+        const cards = row.querySelectorAll(".innercard");
+        for (const card of cards) {
+          card.classList.add("innercard-flip");
+        }
+      }
+
+      function reveal($event) {
+        const card = $event.target;
+        card.parentNode.classList.add("innercard-flip");
+      }
+
+      function seeResult() {
+        const cards = document.querySelectorAll(".innercard");
+        for (const card of cards) {
+          card.classList.add("innercard-flip");
+        }
+      }
+
+      function initCardsEvent() {
+        const letters = document.querySelectorAll(".innercard");
+        for (const letter of letters) {
+          letter.addEventListener("click", reveal);
+        }
+      }
+
+      function initQuestionButtonsEvent() {
+        const rowIndexCards = document.querySelectorAll(".row--index");
+
+        for (const c of rowIndexCards) {
+          c.addEventListener("click", ($event) => {
+            const dialogNumber = $event.target.innerHTML;
+            const dialogElem = document.getElementById(
+              "dialog-" + dialogNumber
+            );
+            dialogElem.showModal();
+          
+            const closeBtn = dialogElem.querySelector(".close");
+
+            closeBtn.addEventListener("click", () => {
+              dialogElem.close();
+            });
+          });
+        }
+      }
+
+      function createRows(rows, keywordIndex) {
+        rows.forEach((row, index) => {
+          createRow(index, row.concat(keywordIndex));
+        });
+      }
+
+      function initGame(rows, keywordIndex) {
+        createRows(rows, keywordIndex);
+        initQuestionButtonsEvent();
+        initCardsEvent();
+      }
+
+      initGame(
+        [
+          ["money", 3],
+          ["deadline", 0],
+          ["goldfish", 5],
+          ["hoaanhdao", 5],
+          ["pentalog", 2],
+          ["keyboard", 5],
+          ["highfive", 0],
+          ["comb", 2],
+        ],
+        5
+      );
+    </script>
+  </body>
+</html>
