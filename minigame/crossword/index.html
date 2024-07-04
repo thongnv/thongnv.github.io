@@ -130,7 +130,6 @@
 
       dialog,
       dialog[open] {
-        width: 69%;
         border: none;
         box-sizing: border-box;
         padding: 40px;
@@ -157,6 +156,12 @@
 
       h1 {
         margin-top: 20px;;
+      }
+      img {
+        min-height: 300px;
+      }
+      .row.active > .card {
+        border-color: #bfd732;
       }
 
       /*   Before-open state  */
@@ -355,7 +360,13 @@
 
         for (const c of rowIndexCards) {
           c.addEventListener("click", ($event) => {
+            const container = document.querySelector(".container");
+            const activeRow = container.querySelector('.active');
+            activeRow?.classList.remove("active");
+
             const dialogNumber = $event.target.innerHTML;
+            const row = container.querySelector(".row:nth-child(" + dialogNumber + ")");
+            row.classList.add("active");
             const dialogElem = document.getElementById(
               "dialog-" + dialogNumber
             );
