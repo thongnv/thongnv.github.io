@@ -353,7 +353,13 @@
         for (let i = 0; i < cards.length; i++) {
           const l = word[i];
           const card = cards[i];
-          card.querySelector(".back").innerHTML = l;
+          setTimeout(() => {
+            card.querySelector(".innercard").classList.remove("innercard-flip");
+            setTimeout(() => {
+              card.querySelector(".back").innerHTML = l;
+              card.querySelector(".innercard").classList.add("innercard-flip");
+            }, (i + 9) * 500);
+          }, i * 500);
         }
       }
 
@@ -386,8 +392,9 @@
             activeRow?.classList.remove("active");
 
             const dialogNumber = $event.target.innerHTML;
+            const rowNumber = +dialogNumber + 1;
             const row = container.querySelector(
-              ".row:nth-child(" + dialogNumber + ")"
+              ".row:nth-child(" + rowNumber + ")"
             );
             row.classList.add("active");
             const dialogElem = document.getElementById(
